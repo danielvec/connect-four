@@ -1,14 +1,27 @@
 class Board
-  def game_board
-    [%w[_ _ _ _ _ _ _], %w[_ _ _ _ _ _ _],
-     %w[_ _ _ _ _ _ _], %w[_ _ _ _ _ _ _],
-     %w[_ _ _ _ _ _ _], %w[_ _ _ _ _ _ _]]  
+  attr_accessor :board
+
+  def initialize
+    @board = [%w[_ _ _ _ _ _ _], %w[_ _ _ _ _ _ _],
+              %w[_ _ _ _ _ _ _], %w[_ _ _ _ _ _ _],
+              %w[_ _ _ _ _ _ _], %w[_ _ _ _ _ _ _]]
   end
 
   def print_board
-    game_board.each do |row|
+    @board.each do |row|
       p row
     end
+  end
+
+  def lowest_space(column)
+    row = @board.length - 1
+    row -= 1 until @board[row][column] == '_'
+    row
+  end
+
+  def mark_board(color, column)
+    row = lowest_space(column)
+    @board[row][column] = color
   end
 end
 
