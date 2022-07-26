@@ -11,7 +11,7 @@ class Player
   def choose_column
     puts 'Choose a column between 1 and 7'
     column = gets.to_i - 1
-    return if column > 0 && column < 8
+    return column if column >= 0 && column < 8
 
     puts 'not a valid column'
   end
