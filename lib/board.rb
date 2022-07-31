@@ -22,8 +22,6 @@ class Board
   def mark_board(color, column)
     row = lowest_space(column)
     @board[row][column] = color
+    print_board
   end
 end
-
-b = Board.new
-b.print_board
