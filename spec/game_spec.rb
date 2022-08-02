@@ -10,67 +10,77 @@ describe Game do
     subject(:game_play) { described_class.new(game_board, first_player, second_player) }
     
     it 'sends print_board to board' do
-      allow(first_player).to receive(:make_move)
-      allow(second_player).to receive(:make_move)
+      allow(game_play).to receive(:player_one_turn)
       expect(game_board).to receive(:print_board).once
       game_play.play_game
     end
+  end
+
+  describe '#player_one_turn' do
+    let(:game_board) { instance_double(Board) }
+    let(:first_player) { instance_double(Player) }
+    let(:second_player) { instance_double(Player) }
+    subject(:game_turn) { described_class.new(game_board, first_player, second_player) }
 
     it 'sends make_move to player_one' do
-      allow(game_board).to receive(:print_board).once
-      allow(second_player).to receive(:make_move)
+      allow(game_turn).to receive(:game_over?)
+      allow(game_turn).to receive(:player_two_turn)
       expect(first_player).to receive(:make_move)
-      game_play.play_game
+      game_turn.player_one_turn
     end
-
-    it 'sends make_move to player_two' do
-      allow(game_board).to receive(:print_board).once
-      allow(first_player).to receive(:make_move)
-      expect(second_player).to receive(:make_move)
-      game_play.play_game
-    end
-
-    #it 'loops through player one and two moves until game over' do
-
-    #end
   end
-  describe '#game_over?' do
+
+  describe '#player_two_turn' do
+    let(:game_board) { instance_double(Board) }
+    let(:first_player) { instance_double(Player) }
+    let(:second_player) { instance_double(Player) }
+    subject(:game_turn) { described_class.new(game_board, first_player, second_player) }
+
+    it 'sends make_move to player_one' do
+      allow(game_turn).to receive(:game_over?)
+      allow(game_turn).to receive(:player_one_turn)
+      expect(second_player).to receive(:make_move)
+      game_turn.player_two_turn
+    end
+  end
+
+  describe '#game_tie?' do
     let(:game_board) { instance_double(Board) }
     subject(:game_end) { described_class.new(game_board) }
 
     context 'when board is full' do
       before do
-        full_board = [%w[o o o o o o o], %w[o o o o o o o],
-                      %w[o o o o o o o], %w[o o o o o o o],
-                      %w[o o o o o o o], %w[o o o o o o o]]
+        full_board = [%W[o o o o o o o], %W[o o o o o o o],
+                      %W[o o o o o o o], %W[o o o o o o o],
+                      %W[o o o o o o o], %W[o o o o o o o]]
         allow(game_board).to receive(:board).and_return(full_board)
       end
-      it 'is game over' do
-        expect(game_end).to be_game_over
+      it 'is game tie' do
+        expect(game_end).to be_game_tie
       end
     end
 
     context 'when board is empty' do
       before do
-        empty_board = [%w[_ _ _ _ _ _ _], %w[_ _ _ _ _ _ _],
-                       %w[_ _ _ _ _ _ _], %w[_ _ _ _ _ _ _],
-                       %w[_ _ _ _ _ _ _], %w[_ _ _ _ _ _ _]]
+        empty_board = [%W[_ _ _ _ _ _ _], %W[_ _ _ _ _ _ _],
+                       %W[_ _ _ _ _ _ _], %W[_ _ _ _ _ _ _],
+                       %W[_ _ _ _ _ _ _], %W[_ _ _ _ _ _ _]]
         allow(game_board).to receive(:board).and_return(empty_board)
       end
-      it 'is not game over' do
-        expect(game_end).to_not be_game_over
+      it 'is not game tie' do
+        expect(game_end).to_not be_game_tie
       end
     end
 
     context 'when board has one empty space' do
       before do
-        one_space = [%w[o o _ o o o o], %w[o o o o o o o],
-                     %w[o o o o o o o], %w[o o o o o o o],
-                     %w[o o o o o o o], %w[o o o o o o o]]
+        one_space = [%W[o o _ o o o o], %W[o o o o o o o],
+                     %W[o o o o o o o], %W[o o o o o o o],
+                     %W[o o o o o o o], %W[o o o o o o o]]
         allow(game_board).to receive(:board).and_return(one_space)
       end
-      it 'is not game over' do
-        expect(game_end).to_not be_game_over
+      it 'is not game tie' do
+        expect(game_end).to_not be_game_tie
       end
     end
   end
@@ -80,9 +90,9 @@ describe Game do
 
     context 'when a player has 4 consecutive marks in a row' do
       before do
-        board_win = [%w[_ _ _ _ _ _ _], %w[_ _ _ _ _ _ _],
-                     %w[_ _ _ _ _ _ _], %w[_ _ _ _ _ _ _],
-                     %w[_ _ _ _ _ _ _], %w[_ _ \u26AA \u26AA \u26AA \u26AA _]]
+        board_win = [%W[_ _ _ _ _ _ _], %W[_ _ _ _ _ _ _],
+                     %W[_ _ _ _ _ _ _], %W[_ _ _ _ _ _ _],
+                     %W[_ _ _ _ _ _ _], %W[_ _ \u26AA \u26AA \u26AA \u26AA _]]
         allow(game_board).to receive(:board).and_return(board_win)
       end
 
@@ -111,9 +121,9 @@ describe Game do
 
     context 'when a player has 4 consecutive marks in a column' do
       before do
-        board_win = [%w[_ _ _ _ _ _ _], %w[_ _ _ _ _ _ _],
-                     %w[_ _ \u26AA _ _ _ _], %w[_ _ \u26AA _ _ _ _],
-                     %w[_ _ \u26AA _ _ _ _], %w[_ _ \u26AA _ _ _ _]]
+        board_win = [%W[_ _ _ _ _ _ _], %W[_ _ _ _ _ _ _],
+                     %W[_ _ \u26AA _ _ _ _], %W[_ _ \u26AA _ _ _ _],
+                     %W[_ _ \u26AA _ _ _ _], %W[_ _ \u26AA _ _ _ _]]
         allow(game_board).to receive(:board).and_return(board_win)
       end
 
@@ -124,9 +134,9 @@ describe Game do
 
     context 'when no player has 4 consecutive marks in a column' do
       before do
-        no_win = [%w[_ _ _ _ _ _ _], %w[_ _ _ \u26AB _ _ _],
-                  %w[_ _ _ _ _ _ _], %w[_ _ _ \u26AB _ _ _],
-                  %w[_ _ _ \u26AA _ _ _], %w[_ \u26AA \u26AA \u26AB \u26AB \u26AB _]]
+        no_win = [%W[_ _ _ _ _ _ _], %W[_ _ _ \u26AB _ _ _],
+                  %W[_ _ _ _ _ _ _], %W[_ _ _ \u26AB _ _ _],
+                  %W[_ _ _ \u26AA _ _ _], %W[_ \u26AA \u26AA \u26AB \u26AB \u26AB _]]
         allow(game_board).to receive(:board).and_return(no_win)
       end
       
@@ -142,9 +152,9 @@ describe Game do
 
     context 'when a player has 4 consecutive marks in a diagonal' do
       before do
-        board_win = [%w[\u26AB _ _ _ _ _ _], %w[_ \u26AB _ _ _ _ _],
-                     %w[_ _ \u26AB _ _ _ _], %w[_ _ \u26AA \u26AB _ _ _],
-                     %w[_ _ \u26AA _ _ _ _], %w[_ _ \u26AA _ _ _ _]]
+        board_win = [%W[\u26AB _ _ _ _ _ _], %W[_ \u26AB _ _ _ _ _],
+                     %W[_ _ \u26AB _ _ _ _], %W[_ _ \u26AA \u26AB _ _ _],
+                     %W[_ _ \u26AA _ _ _ _], %W[_ _ \u26AA _ _ _ _]]
         allow(game_board).to receive(:board).and_return(board_win)
       end
 
@@ -155,9 +165,9 @@ describe Game do
 
     context 'when no player has 4 consecutive marks in a diagonal' do
       before do
-        no_win = [%w[_ _ _ _ _ _ _], %w[_ _ _ \u26AB _ _ _],
-                  %w[_ _ _ _ _ _ _], %w[_ _ _ \u26AB _ _ _],
-                  %w[_ _ _ \u26AA _ _ _], %w[_ \u26AA \u26AA \u26AB \u26AB \u26AB _]]
+        no_win = [%W[_ _ _ _ _ _ _], %W[_ _ _ \u26AB _ _ _],
+                  %W[_ _ _ _ _ _ _], %W[_ _ _ \u26AB _ _ _],
+                  %W[_ _ _ \u26AA _ _ _], %W[_ \u26AA \u26AA \u26AB \u26AB \u26AB _]]
         allow(game_board).to receive(:board).and_return(no_win)
       end
       
