@@ -25,10 +25,10 @@ class Game
   def player_two_turn
     @player_two.make_move
     if game_over?
-        puts "Player two wins" unless game_tie?
-        if game_tie? 
-            puts "tie"
-        end
+      puts "Player two wins" unless game_tie?
+      if game_tie? 
+        puts "tie"
+      end
     else
       player_one_turn
     end
@@ -45,7 +45,8 @@ class Game
   def row_win?(board = @board.board)
     win = false
     for i in 0...board.length
-      if board[i].chunk { |mark| mark == "\u26AA" || "\u26AB" }.any? {|mark, array| mark == true && array.length > 3}
+      if board[i].chunk { |mark| mark == "\u26AA"}.any? {|mark, array| mark == true && array.length > 3} ||
+         board[i].chunk { |mark| mark == "\u26AB"}.any? {|mark, array| mark == true && array.length > 3}
         win = true
       end
     end
