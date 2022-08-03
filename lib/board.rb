@@ -15,7 +15,11 @@ class Board
 
   def lowest_space(column)
     row = @board.length - 1
-    row -= 1 until @board[row][column] == '_'
+    if @board[0][column] == '_'
+      row -= 1 until @board[row][column] == '_'
+    else
+      row = -1
+    end
     row
   end
 
