@@ -9,15 +9,22 @@ class Player
   end
 
   def choose_column
-    puts 'Choose a column between 1 and 7'
-    column = gets.to_i - 1
-    return column if column >= 0 && column < 8
+    loop do
+      puts 'Choose a column between 1 and 7'
+      column = gets.to_i - 1
+      return column if column >= 0 && column < 8
 
-    puts 'not a valid column'
+      puts 'not a valid column'
+    end
   end
 
   def make_move
     column = choose_column
-    @board.mark_board(color, column)
+    if @board.lowest_space(column) < 0
+      puts 'not a valid column'
+      make_move
+    else
+      @board.mark_board(color, column)
+    end
   end
 end
