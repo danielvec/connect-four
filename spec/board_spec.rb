@@ -1,8 +1,8 @@
 require_relative '../lib/board'
 
 describe Board do
-  describe '#game_board' do
 
+  describe '#game_board' do
     subject(:make_board) { described_class.new }
 
     it 'returns 6 arrays' do
@@ -20,6 +20,7 @@ describe Board do
 
   describe '#lowest_space' do
     subject(:board_lowest) { described_class.new }
+
     context 'when the board is empty' do
       it 'returns 5' do
         column = 3
@@ -30,12 +31,30 @@ describe Board do
 
     context 'when the bottom row is full' do
       before do
-        board_lowest.board[5][3] = 'o'
+        board_lowest.board[5][3] = '\u26AA'
       end
+
       it 'returns 4' do
         column = 3
         lowest_row = board_lowest.lowest_space(column)
         expect(lowest_row).to eq(4)
+      end
+    end
+
+    context 'when the entire column is full' do
+      before do
+        board_lowest.board[5][3] = '\u26AA'
+        board_lowest.board[4][3] = '\u26AB'
+        board_lowest.board[3][3] = '\u26AA'
+        board_lowest.board[2][3] = '\u26AB'
+        board_lowest.board[1][3] = '\u26AA'
+        board_lowest.board[0][3] = '\u26AA'
+      end
+
+      it 'returns -1' do
+        column = 3
+        lowest_row = board_lowest.lowest_space(column)
+        expect(lowest_row).to eq(-1)
       end
     end
   end

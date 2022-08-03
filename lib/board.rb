@@ -1,3 +1,4 @@
+# Represents a game board for connect four
 class Board
   attr_accessor :board
 
