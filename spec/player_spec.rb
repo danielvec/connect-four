@@ -11,14 +11,14 @@ describe Player do
         valid_input = 4
         allow(player_choice).to receive(:gets).and_return(valid_input)
       end
-  
+
       it 'returns without displaying puts with error message' do
         error_message = 'not a valid column'
         expect(player_choice).not_to receive(:puts).with(error_message)
         player_choice.choose_column
       end
     end
-  
+
     context 'when user inputs an incorrect value once, then a valid input' do
       before do
         intro_message = 'Choose a column between 1 and 7'
@@ -27,7 +27,7 @@ describe Player do
         valid_input = 1
         allow(player_choice).to receive(:gets).and_return(invalid_input, valid_input)
       end
-  
+
       it 'returns after displaying puts with error message once' do
         error_message = 'not a valid column'
         expect(player_choice).to receive(:puts).with(error_message).once
@@ -35,7 +35,7 @@ describe Player do
       end
     end
   end
-  
+
   describe '#make_move' do
     let(:game_board) { instance_double(Board) }
     subject(:player_move) { described_class.new('black', game_board) }
@@ -43,6 +43,7 @@ describe Player do
     before do
       column = 2
       allow(player_move).to receive(:choose_column).and_return(column)
+      allow(game_board).to receive(:lowest_space).with(column).and_return(column)
     end
 
     it 'sends mark_board to Board' do

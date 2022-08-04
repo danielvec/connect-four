@@ -1,5 +1,6 @@
 require_relative 'board'
 
+# represents a player of connect four
 class Player
   attr_reader :color
 
@@ -20,7 +21,7 @@ class Player
 
   def make_move
     column = choose_column
-    if @board.lowest_space(column) < 0
+    if @board.lowest_space(column).negative?
       puts 'not a valid column'
       make_move
     else
