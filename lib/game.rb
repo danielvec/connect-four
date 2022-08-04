@@ -1,6 +1,7 @@
 require_relative 'board'
 require_relative 'player'
 
+# represents a game of connect four
 class Game
   def initialize(board = Board.new, player_one = Player.new("\u26AA", board), player_two = Player.new("\u26AB", board))
     @board = board
@@ -16,7 +17,7 @@ class Game
   def player_one_turn
     @player_one.make_move
     if game_over?
-      puts "Player one wins!"
+      puts 'Player one wins!'
     else
       player_two_turn
     end
@@ -25,10 +26,8 @@ class Game
   def player_two_turn
     @player_two.make_move
     if game_over?
-      puts "Player two wins" unless game_tie?
-      if game_tie? 
-        puts "tie"
-      end
+      puts 'Player two wins' unless game_tie?
+      puts 'tie' if game_tie?
     else
       player_one_turn
     end
@@ -39,14 +38,14 @@ class Game
   end
 
   def game_tie?
-    !@board.board.flatten.include?("_")
+    !@board.board.flatten.include?('_')
   end
 
   def row_win?(board = @board.board)
     win = false
-    for i in 0...board.length
-      if board[i].chunk { |mark| mark == "\u26AA"}.any? {|mark, array| mark == true && array.length > 3} ||
-         board[i].chunk { |mark| mark == "\u26AB"}.any? {|mark, array| mark == true && array.length > 3}
+    (0...board.length).each do |i|
+      if board[i].chunk { |mark| mark == "\u26AA" }.any? {|mark, array| mark == true && array.length > 3} ||
+         board[i].chunk { |mark| mark == "\u26AB" }.any? {|mark, array| mark == true && array.length > 3}
         win = true
       end
     end
@@ -59,26 +58,20 @@ class Game
 
   def diagonal_win?(board = @board.board)
     win = false
-    for j in 0...(board.length - 3)
-      for i in 0...(board.transpose.length - 3)
+    rows = board.length
+    columns = board.transpose.length
+    (0...(rows - 3)).each do |j|
+      (0...(columns - 3)).each do |i|
         diagonal = []
         diagonal << board[j][i] << board[j + 1][i + 1] << board[j + 2][i + 2] << board[j + 3][i + 3]
-        if diagonal.all?("\u26AA") || diagonal.all?("\u26AB")
-          win = true
-        end
+        win = true if diagonal.all?("\u26AA") || diagonal.all?("\u26AB")
       end
-      for i in (board.length - 3)...(board.transpose.length)
+      ((columns - 4)...columns).each do |i|
         diagonal = []
         diagonal << board[j][i] << board[j + 1][i - 1] << board[j + 2][i - 2] << board[j + 3][i - 3]
-        if diagonal.all?("\u26AA") || diagonal.all?("\u26AB")
-          win = true
-          p 'win'
-        end
+        win = true if diagonal.all?("\u26AA") || diagonal.all?("\u26AB")
       end
     end
     win == true
   end
 end
-
-N = Game.new
-N.play_game

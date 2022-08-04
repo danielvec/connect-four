@@ -170,11 +170,10 @@ describe Game do
                   %W[_ _ _ \u26AA _ _ _], %W[_ \u26AA \u26AA \u26AB \u26AB \u26AB _]]
         allow(game_board).to receive(:board).and_return(no_win)
       end
-      
+
       it 'is not column win' do
         expect(win_diagonal).to_not be_diagonal_win
       end
     end
   end
-      
 end
